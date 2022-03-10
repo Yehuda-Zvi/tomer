@@ -5,7 +5,7 @@ import PassInput from "./components/PassInput"
 import MailInput from "./components/MailInput"
 import { useRef, useState } from "react"
 import axios from "axios"
-import { Navigate, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 export default function Login({ setUser }) {
   const navigate = useNavigate()
@@ -21,19 +21,20 @@ export default function Login({ setUser }) {
     } else {
       return
     }
-    setErr(false)
 
-    const user = {}
-    user.email = mailRef.current.value
-    user.password = passRef.current.value
+    const user = {
+      email: mailRef.current.value,
+      password: passRef.current.value,
+    }
 
     const { data } = await axios.post("https://dev-api.wideview.io/auth/login", user)
 
     if (data === "Incorrect password") {
       setErr(true)
+      setTimeout(() => setErr(false), 3000)
     } else {
       setUser(data.user.email)
-      navigate("/success", { state: { name: "yuda" } })
+      navigate("/success")
     }
   }
 
